@@ -245,7 +245,7 @@ while feed:
                     continue
         elif qmore == 'N':
             print('Ok, Goodbye.\n')
-            os.exit(0)
+            os._exit(0)
         else:
             print('Invalid Input.\n')
             qmore = None
