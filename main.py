@@ -140,8 +140,8 @@ def_path.close()
 
 feed = "feed"
 while feed:
-    feed = setfeed() #Ignore this warning.
-    parsefeed(feed, 0) #Something is NOT RIGHT!
+    feed = setfeed()
+    parsefeed(feed, 0)
     pfeed = parsefeed.feed
     feed_length = len(pfeed.entries)
 
