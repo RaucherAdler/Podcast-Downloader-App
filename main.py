@@ -140,8 +140,8 @@ def_path.close()
 
 feed = "feed"
 while feed:
-    feed = setfeed()
-    parsefeed(feed, 0)
+    feed = setfeed() #Ignore this warning.
+    parsefeed(feed, 0) #Something is NOT RIGHT!
     pfeed = parsefeed.feed
     feed_length = len(pfeed.entries)
 
@@ -245,7 +245,7 @@ while feed:
                     continue
         elif qmore == 'N':
             print('Ok, Goodbye.\n')
-            os._exit(0)
+            os.exit(0)
         else:
             print('Invalid Input.\n')
             qmore = None
