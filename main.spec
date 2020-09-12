@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['/home/runner/RSS-Feed-APP-cmd-ver'],
+             pathex=['/opt/virtualenvs/python3/lib/python3.8/site-packages/', '/home/runner/RSS-Feed-APP-CMD-1'],
              binaries=[],
              datas=[],
              hiddenimports=[],
