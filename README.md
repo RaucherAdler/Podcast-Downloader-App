@@ -7,7 +7,7 @@ The purpose of this application is to parse RSS Feeds
  podcasts and other audio. Future versions may allow 
  for news/video feeds. This is just a small side-project 
  i've worked on for a while now mainly for my own usage. 
- If you come across any issueor want more information, 
+ If you come across any issue or want more information, 
  feel free to reach out to me.
 
 ## For Source (main.py):
