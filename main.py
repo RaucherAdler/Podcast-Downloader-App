@@ -206,7 +206,7 @@ while feed:
                         continue
                     else:
                         pass
-                    parsefeed(pfeed, entnum)
+                    parsefeed(feed, entnum)
                     print(parsefeed.title, '\n', parsefeed.link, '\n', 'Duration: ', parsefeed.itunes_duration, '\n','Time Published:', parsefeed.published, '\n', 'Explicit: ', parsefeed.itunes_explicit, '\n')
                     entnum_dl_txt = None
                     entnum_dl_txt = input('Would you like to download this podcast?\n(Y or N): ')
