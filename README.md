@@ -28,4 +28,4 @@ You can find me here:
 (raucheradler@gmail.com)
 Discord: Raucher Adler#1521 | [My Server](https://discord.gg/6GFQcFHjSK)
 
-Github: [Github](https://www.github.com/RaucherAdler)
+[Github](https://www.github.com/RaucherAdler)
