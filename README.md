@@ -10,9 +10,7 @@ The purpose of this application is to parse RSS Feeds
  feel free to reach out to me.
 
 # From Source:
-- In order to run source Python code, you must have
- an up to date version of Python 3.X as well as
- the required dependencies:
+- Check that you have the following:
     - Python 3.x
     - Feedparser
 - Then run `python main.py` in your terminal.
@@ -30,4 +28,4 @@ You can find me here:
 (raucheradler@gmail.com)
 Discord: Raucher Adler#1521 | [My Server](https://discord.gg/6GFQcFHjSK)
 
-[GitHub](www.github.com/raucheradler)
+Github: [Github](https://www.github.com/RaucherAdler)
