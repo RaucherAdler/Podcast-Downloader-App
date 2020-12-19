@@ -97,7 +97,7 @@ def downloadcast():
 
 def setfeed():
     def_feed = open('def-feed.txt', 'a+')
-    other = '\u0332'.join('other.')
+    other = u'\u0332'.join('other.')
     showfeeds()
     feed_option = None
     while not feed_option:
@@ -122,6 +122,14 @@ def setfeed():
             continue
     def_feed.close()
     return feed
+
+
+def isconnected():
+    try:
+        urllib.request.urlopen('www.google.com')
+        return True
+    except:
+        False
 
 
 print('Welcome to Podcast Downloader by R. Adler\n')
@@ -245,7 +253,7 @@ while feed:
                     continue
         elif qmore == 'N':
             print('Ok, Goodbye.\n')
-            os.exit(0)
+            os._exit(0)
         else:
             print('Invalid Input.\n')
             qmore = None
