@@ -26,7 +26,7 @@ do keep in mind it isn't perfect.
 # Contact me
 You can find me here:
 
-Email: raucheradler@gmail.com
+(raucheradler@gmail.com)
 
 Discord: Raucher Adler#1521 | [My Server](https://discord.gg/6GFQcFHjSK)
 
