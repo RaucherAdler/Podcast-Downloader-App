@@ -176,7 +176,7 @@ while feed:
     c = 0
     qmore = None
     while not qmore:
-        qmore = input('Would you like to view more episodes?\n(Y or N): ')
+        qmore = input('Would you like to view more episodes?\n(Y/N): ')
         if qmore == 'Y':
             while qmore == 'Y':
                 if OutOfRange == False:
