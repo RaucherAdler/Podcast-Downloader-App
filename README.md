@@ -1,4 +1,4 @@
-RSS Feed Application by R. Adler V.2.0 8/24/20
+RSS Feed Application by R. Adler v3.0 12/19/20
 
 # About 
 The purpose of this application is to parse RSS Feeds

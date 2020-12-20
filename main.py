@@ -139,7 +139,7 @@ if is_connected() != True:
 feed = "feed"
 while feed:
     feed = setfeed() #Ignore this warning.
-    pfeed, entry = parsefeed(feed, 0) #Something is NOT RIGHT!
+    pfeed, entry = parsefeed(feed, 0)
     
     feed_length = len(pfeed.entries)
 
