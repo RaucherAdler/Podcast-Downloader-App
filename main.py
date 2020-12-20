@@ -151,10 +151,10 @@ while feed:
     alt = None
     txt = None
     while not alt:
-        alt = input('Is this the episode you want?\n(Y or N): ')
+        alt = input('Is this the episode you want?\n(Y/N): ')
         if alt == 'Y':
             while not txt:
-                txt = input('Would you like to download this podcast?\n(Y or N): ')
+                txt = input('Would you like to download this podcast?\n(Y/N): ')
                 if txt == 'Y':
                     downloadcast(entry['url'], dpath, entry['title'])
                 elif txt == 'N':
