@@ -8,6 +8,8 @@ import sys
 import time
 import threading
 import os
+import validators
+
 
 class Spinner(): #Borrowed from stackoverflow
     busy = False
@@ -42,24 +44,6 @@ class Spinner(): #Borrowed from stackoverflow
             return False
 
 
-def NextEntries(a, b, c): #Gets next entries in a feed and formats them then prints
-    c = c * 5
-    a = a + c
-    b = b + c
-    EntryRange = range(a, b)
-    for i in EntryRange:
-        try:
-            NextEntries.ntry = parsefeed.feed.entries[i]
-        except IndexError:  
-            NextEntries.OutOfRange = True
-            print('There are no more entries.\n')
-            return False
-        else:
-            NextEntries.titles = NextEntries.ntry.title
-            print(str(i) + '. ' + NextEntries.titles + '\n')
-            NextEntries.OutOfRange = False
-
-
 def showfeeds():
     def_feed = open('def-feed.txt', 'a+')
     print('Here are your RSS Feeds:') #Show Feeds
@@ -73,26 +57,27 @@ def showfeeds():
     def_feed.close()
 
 
-def parsefeed(rssfeed, entryinfeed):
-    parsefeed.feed = feedparser.parse(rssfeed)
-    parsefeed.entry = parsefeed.feed.entries[entryinfeed]
-    parsefeed.title = parsefeed.entry.title
-    parsefeed.published = parsefeed.entry.published
-    parsefeed.link = parsefeed.entry.link
-    parsefeed.itunes_duration = parsefeed.entry.itunes_duration
-    parsefeed.itunes_explicit = parsefeed.entry.itunes_explicit
-    parsefeed.url = parsefeed.entry.enclosures[0].url
-    parsefeed.path = dpath + parsefeed.title + '.mp3'
+OutOfRange = False
+def parsefeed(feedurl, entrynum):
+    parsed_feed = feedparser.parse(feedurl)
+    try:
+        entry = parsed_feed.entries[entrynum]
+        entry_dict = {'title' : entry.title, 'published' : entry.published, 'link' : entry.link, 
+                'itunes_duration' : entry.itunes_duration, 'itunes_explicit' : entry.itunes_explicit, 
+                'url' : entry.enclosures[0].url}
+        return parsed_feed, entry_dict
+    except IndexError:
+        global OutOfRange
+        OutOfRange = True
 
 
-def downloadcast():
-    print('Preparing Download...')
-    url = parsefeed.url
-    path = parsefeed.path
+def downloadcast(url, path, entry_title):
+    dpath = path + entry_title.replace('/', u'\u2044') + '.mp3'
     print('Downloading...')
     with Spinner():
         urllib.request.urlretrieve(url, path)
     print('Download Completed.')
+
 
 
 def setfeed():
@@ -101,17 +86,16 @@ def setfeed():
     showfeeds()
     feed_option = None
     while not feed_option:
-        feed_option = input('\nWhat RSS Feed would you like to access?(Use line number or type ' + other + ')'+'\n')
-        if feed_option == 'other':
-            nfeed = input('What RSS Feed would you like to access?:\n')
-            addfeed = input('Would you like to add this RSS Feed to you default list?\n(Y or N): ')
+        feed_option = input('\nWhat RSS Feed would you like to access?(Use line number or type a valid RSS Feed Address): ')
+        if validators.url(feed_option) == True:
+            addfeed = input('\nWould you like to add this RSS Feed to you default list? (Y/N): ')
             if addfeed == "Y": #Adds new feed to def-feed.txt, gets proper line to write to.
                 dfeed = linecache.getline('def-feed.txt', 1)
                 if dfeed:
-                    def_feed.write('\n' + nfeed)
+                    def_feed.write('\n' + feed_option)
                 else:
-                    def_feed.write(nfeed)
-            feed = nfeed
+                    def_feed.write(feed_option)
+            feed = feed_option
         elif feed_option.isnumeric() == True:
             feed_opt = int(feed_option)
             feed_address = linecache.getline('def-feed.txt', feed_opt)
@@ -124,9 +108,9 @@ def setfeed():
     return feed
 
 
-def isconnected():
+def is_connected():
     try:
-        urllib.request.urlopen('www.google.com')
+        urllib.request.urlopen('https://google.com')
         return True
     except:
         False
@@ -138,24 +122,30 @@ print('Welcome to Podcast Downloader by R. Adler\n')
 #This chunk sets file path for downloads
 def_path = open('def-path.txt', 'a+')
 pth = linecache.getline('def-path.txt', 1).split('\n')
-dpath = pth[0]
+dpath = r'{}'.format(pth[0])
 if not dpath:
     newpth = input('Where would you like to save your files? (Make sure to include closing slash.)')
     def_path.write(newpth)
+    dpath = r'{}'.format(newpth)
 print('All files will download to: ', dpath,'\n')
 def_path.close()
+
+
+if is_connected() != True:
+    print('You must be connected to the internet.')
+    os._exit(1)
 
 
 feed = "feed"
 while feed:
     feed = setfeed() #Ignore this warning.
-    parsefeed(feed, 0) #Something is NOT RIGHT!
-    pfeed = parsefeed.feed
+    pfeed, entry = parsefeed(feed, 0) #Something is NOT RIGHT!
+    
     feed_length = len(pfeed.entries)
 
 
     print('\nMost Recent:')
-    print(parsefeed.title, '\n', parsefeed.link, '\n', 'Duration: ', parsefeed.itunes_duration, '\n','Time Published:', parsefeed.published, '\n', 'Explicit: ', parsefeed.itunes_explicit, '\n')
+    print(f"{entry['title']}\n{entry['link']}\nDuration: {entry['itunes_duration']}\nTime Published: {entry['published']}\nExplicit: {entry['itunes_explicit']}")
 
 
     alt = None
@@ -166,7 +156,7 @@ while feed:
             while not txt:
                 txt = input('Would you like to download this podcast?\n(Y or N): ')
                 if txt == 'Y':
-                    downloadcast()
+                    downloadcast(entry['url'], dpath, entry['title'])
                 elif txt == 'N':
                     pass
                 else:
@@ -180,28 +170,30 @@ while feed:
             alt = None
             continue
 
-    try:  #Gets Attribute or sets Attribute
-        getattr(NextEntries, 'OutOfRange')
-    except AttributeError:
-        setattr(NextEntries, 'OutOfRange', False)
 
-
+    _min = 1
+    _max = 6
     c = 0
     qmore = None
     while not qmore:
         qmore = input('Would you like to view more episodes?\n(Y or N): ')
         if qmore == 'Y':
             while qmore == 'Y':
-                if NextEntries.OutOfRange == False:
+                if OutOfRange == False:
                     print('Here are five more entries:\n')
-                    NextEntries(1, 6, c)
+                    _min = _min + c
+                    _max = _max + c
+                    for x in range(_min, _max):
+                        x_entry = pfeed.entries[x]
+                        entry_title = x_entry.title
+                        print(str(x) + '. ' + entry_title + '\n')
                 entnum = None
                 entnum = input('Which would you like view? (Type line number or type More to show more. Type Show All to show all entries. Type Change Feed to switch feeds. Else, type End):\n')
                 if entnum == 'End':
                     print('Ok, Goodbye.\n')
                     os._exit(0)
                 elif entnum == 'More':
-                    if NextEntries.OutOfRange == True:
+                    if OutOfRange == True:
                         print('There are no more entries.\n')
                     else:    
                         c = c + 1
@@ -212,16 +204,14 @@ while feed:
                         print('Invalid Entry.\n')
                         entnum = None
                         continue
-                    else:
-                        pass
-                    parsefeed(feed, entnum)
-                    print(parsefeed.title, '\n', parsefeed.link, '\n', 'Duration: ', parsefeed.itunes_duration, '\n','Time Published:', parsefeed.published, '\n', 'Explicit: ', parsefeed.itunes_explicit, '\n')
+                    pfeed, entry = parsefeed(feed, entnum)
+                    print(f"{entry['title']}\n{entry['link']}\nDuration: {entry['itunes_duration']}\nTime Published: {entry['published']}\nExplicit: {entry['itunes_explicit']}")
                     entnum_dl_txt = None
-                    entnum_dl_txt = input('Would you like to download this podcast?\n(Y or N): ')
+                    entnum_dl_txt = input('Would you like to download this podcast? (Y/N): ')
                     if entnum_dl_txt == 'Y':
-                        downloadcast()
+                        downloadcast(entry['url'], dpath, entry['title'])
                         entnum_dl_ano = None
-                        entnum_dl_ano = input('Would you like to view another?\n(Y or N): ')
+                        entnum_dl_ano = input('Would you like to view another? (Y/N): ')
                         if entnum_dl_ano == 'Y':
                             pass
                         elif entnum_dl_ano == 'N':
@@ -229,7 +219,7 @@ while feed:
                             os._exit(0) 
                     elif entnum_dl_txt == 'N':
                         entnum_dl_ano = None
-                        entnum_dl_ano = input('Would you like to view another?\n(Y or N): ')
+                        entnum_dl_ano = input('Would you like to view another? (Y/N): ')
                         if entnum_dl_ano == 'Y':
                             pass
                         elif entnum_dl_ano == 'N':
@@ -240,10 +230,11 @@ while feed:
                         qmore = None
                         continue
                 elif entnum == 'Show All':
-                    for i in range(0, (feed_length)):
-                        entrytitle = parsefeed.title
-                        print(str(i+1) + '. ' + entrytitle + '\n')
-                        NextEntries.OutOfRange = True
+                    for i in range(0, feed_length):
+                        entry = pfeed.entries[i]
+                        entrytitle = entry.title
+                        print(str(i) + '. ' + entrytitle + '\n')
+                        OutOfRange = True
                         continue
                 elif entnum == 'Change Feed':
                     break
