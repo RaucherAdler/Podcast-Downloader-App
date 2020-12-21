@@ -75,7 +75,7 @@ def downloadcast(url, path, entry_title):
     dpath = path + entry_title.replace('/', u'\u2044') + '.mp3'
     print('Downloading...')
     with Spinner():
-        urllib.request.urlretrieve(url, path)
+        urllib.request.urlretrieve(url, dpath)
     print('Download Completed.')
 
 
@@ -183,10 +183,17 @@ while feed:
                     print('Here are five more entries:\n')
                     _min = _min + c
                     _max = _max + c
+                    if _max >= feed_length:
+                        _max = feed_length
+                        _min = feed_length - 5
                     for x in range(_min, _max):
                         x_entry = pfeed.entries[x]
                         entry_title = x_entry.title
                         print(str(x) + '. ' + entry_title + '\n')
+                        if x >= feed_length:
+                            OutOfRange = True
+                            print('Out of entries.')
+                            break
                 entnum = None
                 entnum = input('Which would you like view? (Type line number or type More to show more. Type Show All to show all entries. Type Change Feed to switch feeds. Else, type End):\n')
                 if entnum == 'End':
@@ -237,6 +244,7 @@ while feed:
                         OutOfRange = True
                         continue
                 elif entnum == 'Change Feed':
+                    OutOfRange = False
                     break
                 else:
                     print('Invalid Input.\n')
