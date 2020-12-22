@@ -1,4 +1,4 @@
-RSS Feed Application by R. Adler v3.0 12/19/20
+RSS Feed Application by R. Adler v3.2 12/22/20
 
 # About 
 The purpose of this application is to parse RSS Feeds
@@ -11,8 +11,8 @@ The purpose of this application is to parse RSS Feeds
 
 # From Source:
 - Check that you have the following:
-    - Python 3.x
-    - Feedparser
+    - [Python 3.x](https://www.python.org/)
+    - [Feedparser](https://github.com/kurtmckee/feedparser)
 - Then run `python main.py` in your terminal.
 
 ## Note:
