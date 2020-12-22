@@ -58,14 +58,13 @@ def showfeeds():
 
 
 OutOfRange = False
-def parsefeed(feedurl, entrynum):
-    parsed_feed = feedparser.parse(feedurl)
+def parsefeed(parsed_feed, entrynum):
     try:
         entry = parsed_feed.entries[entrynum]
         entry_dict = {'title' : entry.title, 'published' : entry.published, 'link' : entry.link, 
                 'itunes_duration' : entry.itunes_duration, 'itunes_explicit' : entry.itunes_explicit, 
                 'url' : entry.enclosures[0].url}
-        return parsed_feed, entry_dict
+        return entry_dict
     except IndexError:
         global OutOfRange
         OutOfRange = True
@@ -139,7 +138,8 @@ if is_connected() != True:
 feed = "feed"
 while feed:
     feed = setfeed() #Ignore this warning.
-    pfeed, entry = parsefeed(feed, 0)
+    pfeed = feedparser.parse(feed)
+    entry = parsefeed(pfeed, 0)
     
     feed_length = len(pfeed.entries)
 
@@ -211,7 +211,7 @@ while feed:
                         print('Invalid Entry.\n')
                         entnum = None
                         continue
-                    pfeed, entry = parsefeed(feed, entnum)
+                    entry = parsefeed(pfeed, entnum)
                     print(f"{entry['title']}\n{entry['link']}\nDuration: {entry['itunes_duration']}\nTime Published: {entry['published']}\nExplicit: {entry['itunes_explicit']}")
                     entnum_dl_txt = None
                     entnum_dl_txt = input('Would you like to download this podcast? (Y/N): ')
