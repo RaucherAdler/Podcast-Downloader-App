@@ -96,9 +96,14 @@ def setfeed():
                     def_feed.write(feed_option)
             feed = feed_option
         elif feed_option.isnumeric() == True:
-            feed_opt = int(feed_option)
+            feed_opt = int(feed_option)   
             feed_address = linecache.getline('def-feed.txt', feed_opt)
-            feed = feed_address
+            if validators.url(feed_address) == True:
+                feed = feed_address
+            else:
+                print('Improper Input or Feed.\n')
+                feed_option = None
+                continue
         else:
             print('Improper Input.\n')
             feed_option = None
