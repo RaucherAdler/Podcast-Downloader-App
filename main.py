@@ -11,6 +11,7 @@ import os
 import validators
 
 
+
 class Spinner(): #Borrowed from stackoverflow
     busy = False
     delay = 0.1
@@ -57,13 +58,27 @@ def showfeeds():
     def_feed.close()
 
 
+def format_bytes(size): #credit to someone else on stackoverflow
+    power = 2**10
+    n = 0
+    power_labels = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'Y'}
+    while size > power:
+        size /= power
+        n += 1
+    return size, power_labels[n]+'B'
+
+
 OutOfRange = False
 def parsefeed(parsed_feed, entrynum):
     try:
         entry = parsed_feed.entries[entrynum]
-        entry_dict = {'title' : entry.title, 'published' : entry.published, 'link' : entry.link, 
-                'itunes_duration' : entry.itunes_duration, 'itunes_explicit' : entry.itunes_explicit, 
-                'url' : entry.enclosures[0].url}
+        try:
+            entry_dict = {'title' : entry.title, 'published' : entry.published, 'link' : entry.link, 
+                'duration' : entry.itunes_duration, 'explicit' : entry.itunes_explicit, 
+                'file_length' : int(entry.enclosures[0].length), 'url' : entry.enclosures[0].url}
+        except:
+            entry_dict = {'title' : entry.title, 'published' : entry.published, 'link' : entry.link,
+                'file_length' : int(entry.enclosures[0].length), 'url' : entry.enclosures[0].url}
         return entry_dict
     except IndexError:
         global OutOfRange
@@ -121,16 +136,28 @@ def is_connected():
 
 
 def pinfo(entry):
+    title = entry['title']
+    link = entry['link']
+    published = entry['published']
     try:
-        print(f"{entry['title']}")
+        pubtime = entry['duration']
+    except:
+        pubtime = None
     try:
-        print(f"{entry['link']}")
-    try:
-        print(f"Duration: {entry['itunes_duration']}")
-    try:    
-        print(f"Time Published: {entry['published']}")
-    try:    
-        print(f"Explicit: {entry['itunes_explicit']}")
+        explicit = entry['explicit']
+    except:
+        explicit = None
+
+    filelenbyte = entry['file_length']
+    byte, frmt = format_bytes(filelenbyte)
+    formatted_bytes = str(round(byte, 2)) + frmt
+
+    print(f'Title: {title}')
+    print(f'{link} | {formatted_bytes}')
+    print(f'Duration: {pubtime}')
+    print(f'Time Published: {published}')
+    print(f'Explicit: {explicit}')
+    
 
 
 print('Welcome to Podcast Downloader by R. Adler\n')
