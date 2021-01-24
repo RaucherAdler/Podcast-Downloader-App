@@ -120,6 +120,19 @@ def is_connected():
         False
 
 
+def pinfo(entry):
+    try:
+        print(f"{entry['title']}")
+    try:
+        print(f"{entry['link']}")
+    try:
+        print(f"Duration: {entry['itunes_duration']}")
+    try:    
+        print(f"Time Published: {entry['published']}")
+    try:    
+        print(f"Explicit: {entry['itunes_explicit']}")
+
+
 print('Welcome to Podcast Downloader by R. Adler\n')
 
 
@@ -150,8 +163,7 @@ while feed:
 
 
     print('\nMost Recent:')
-    print(f"{entry['title']}\n{entry['link']}\nDuration: {entry['itunes_duration']}\nTime Published: {entry['published']}\nExplicit: {entry['itunes_explicit']}")
-
+    pinfo(entry)
 
     alt = None
     txt = None
@@ -217,7 +229,7 @@ while feed:
                         entnum = None
                         continue
                     entry = parsefeed(pfeed, entnum)
-                    print(f"{entry['title']}\n{entry['link']}\nDuration: {entry['itunes_duration']}\nTime Published: {entry['published']}\nExplicit: {entry['itunes_explicit']}")
+                    pinfo(entry)
                     entnum_dl_txt = None
                     entnum_dl_txt = input('Would you like to download this podcast? (Y/N): ')
                     if entnum_dl_txt == 'Y':
