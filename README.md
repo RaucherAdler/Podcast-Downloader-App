@@ -13,6 +13,7 @@ The purpose of this application is to parse RSS Feeds
 - Check that you have the following:
     - [Python 3.x](https://www.python.org/)
     - [Feedparser](https://github.com/kurtmckee/feedparser)
+    - [Validators](https://github.com/kvesteri/validators)
 - Then run `python main.py` in your terminal.
 
 ## Note:
