@@ -131,7 +131,7 @@ while feed:
                     feed = False
                     break
                 elif entnum.lower() == 'options' or entnum.lower() == 'o':
-                    print("Current options include:\n|letter|name       |meaning (Note: you can use either the letter or name)|\n|     o|options    |displays this                                        |\n|     m|more       |show more episodes                                   |\n|    sa|show all   |show all episodes                                    |\n|    cf|change feed|change to another feed                               |\n|     e|end        |end program                                          |")
+                    print("Current options include:\n|letter|name       |meaning (Note: you can use either the letter or name)|\n|     o|options    |displays this                                        |\n|     m|more       |show more episodes                                   |\n|    sa|show all   |show all episodes                                    |\n|    cf|change feed|change to another feed                               |\n|     e|end        |end program                                          |\n|     s|search     |search for a string in an episode title              |")
                 elif entnum.lower() == 'more' or entnum.lower() == 'm':
                     if OutOfRange == True:
                         print('There are no more entries.\n')
@@ -185,6 +185,18 @@ while feed:
                     OutOfRange = False
                     DisplayMore = True
                     break
+                elif entnum.lower() == 'search' or entnum.lower() == 's':
+                    searchstr = input('Search for: ').lower()
+                    ineps = []
+                    for ind, fd in enumerate(pfeed.entries):
+                        if searchstr in fd['title'].lower():
+                            ineps.append(ind)
+                    if len(ineps) == 0:
+                        print('No Episodes Found')
+                    else:
+                        print('String found in:\n')
+                        for x in ineps:
+                            print(f'{str(x+1)}. {pfeed.entries[x]["title"]}')
                 else:
                     print('Invalid Input.\n')
                     qmore = 'Y'

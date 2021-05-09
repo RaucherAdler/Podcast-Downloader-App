@@ -17,7 +17,7 @@ def showfeeds(): #isn't working right yet
     if nfeeds != 0:
         print('Here are your RSS Feeds:\n') #Show Feeds
         if nfeeds > 1:
-            for i in range(0, nfeeds-1): #Formats Feeds to be readable    
+            for i in range(0, nfeeds): #Formats Feeds to be readable
                 feed = feeds[i]
                 print(str(i+1) + '. ' + feed)
         else:
