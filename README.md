@@ -1,10 +1,10 @@
-RSS Feed Application by R. Adler v5.0 1/24/20
+RSS Feed Application by R. Adler v6.0 5/08/21
 
 # About 
 The purpose of this application is to parse RSS Feeds
  and download associated files simply within the 
  terminal. As of now it is only meant for 
- podcasts and other audio. This is just a small side-project 
+ podcasts. This is just a small side-project 
  i've worked on for a while now mainly for my own usage. 
  If you come across any issue or want more information, 
  feel free to reach out to me.
@@ -17,10 +17,11 @@ The purpose of this application is to parse RSS Feeds
 - Then run `python main.py` in your terminal.
 
 ## Note:
-If you are having issues with file paths / your saved
-RSS Feeds, there are two text files included with this 
-program of which you can manually edit if needed.
-As of now there are a couple issues I have yet to fix 
+If you are having issues with file paths or your saved
+RSS Feeds, there is a `config.json` file you can
+manually edit if needed, I plan to include an easier 
+way to do this in later releases.
+As of now there are a couple issues I have yet to fix
 due to a shift in my focuses towards other projects, so
 do keep in mind it isn't perfect.
 
@@ -29,6 +30,6 @@ You can find me here:
 
 Email: raucheradler@gmail.com
 
-Discord: Raucher Adler#1521 | [My Server](https://discord.gg/6GFQcFHjSK)
+Discord: [My Server](https://discord.gg/6GFQcFHjSK)
 
 [Github](https://www.github.com/RaucherAdler)
