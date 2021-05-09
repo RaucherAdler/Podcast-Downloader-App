@@ -62,7 +62,7 @@ def setfeed():
         feed_option = input('\nWhat RSS Feed would you like to access? (Use line number or type a valid RSS Feed Address): ')
         if validators.url(feed_option) == True:
             addfeed = input('\nWould you like to add this RSS Feed to your default feed list? (Y/N): ')
-            if addfeed == 'Y':
+            if addfeed.lower() == 'y':
                 config['feeds'].append(feed_option)
                 with open('config.json', 'w+') as f:
                     f.seek(0)
@@ -76,7 +76,11 @@ def setfeed():
                 continue
         elif feed_option.isnumeric():
             feed_opt = int(feed_option)
-            feed = config['feeds'][feed_opt-1]
+            try:
+                feed = config['feeds'][feed_opt-1]
+            except IndexError:
+                print('Invalid Feed\n')
+                continue
             parsed_feed = feedparser.parse(feed)
             if parsed_feed is not None:
                 break
