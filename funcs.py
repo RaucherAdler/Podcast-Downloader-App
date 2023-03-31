@@ -60,14 +60,20 @@ def setfeed():
     feed = True
     while feed:
         feed_option = input('\nWhat RSS Feed would you like to access? (Use line number or type a valid RSS Feed Address): ')
-        if validators.url(feed_option) == True:
+        if (validators.url(feed_option) == True) or (feed_option.startswith("file://")):
+            if feed_option.startswith("file://"):
+                feed = feed_option[7:]
+                if not os.path.exists(feed):
+                    print("Invalid Feed\n")
+                    continue
+            else:
+                feed = feed_option
             addfeed = input('\nWould you like to add this RSS Feed to your default feed list? (Y/N): ')
             if addfeed.lower() == 'y':
-                config['feeds'].append(feed_option)
+                config['feeds'].append(feed)
                 with open('config.json', 'w+') as f:
                     f.seek(0)
                     json.dump(config, f, indent=4)
-            feed = feed_option
             parsed_feed = feedparser.parse(feed)
             if parsed_feed is not None:
                 break
