@@ -6,7 +6,7 @@ If you come across any issue or want more information, feel free to reach out to
 
 # Install From Source:
 Check that you have the following:\
-    - [Python 3.x](https://www.python.org/)\
+    - [Python 3.10+](https://www.python.org/)\
     - [Feedparser](https://github.com/kurtmckee/feedparser)\
     - [Validators](https://github.com/kvesteri/validators)\
     - [Requests](https://github.com/psf/requests)\
