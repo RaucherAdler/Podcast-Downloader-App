@@ -2,12 +2,10 @@
 #Created by R. Adler
 
 #notes
-#for py 3.10 when it enters production: encorperate switch statements
 #for better inputs, ln.246, rework it, consider working it into a function and add a sort of "aliasing" system, possible user keybinds, etc. as well as just a general settings menu to configure saved feeds
-#add search feature
-#to make case-sensitivity not an issue, make all inputs lowercase by default
-#"options": {"m": "more", "more": "more", "sa": "show all", "show all": "show all", "cf": "change feed", "change feed": "change feed", "s": "search", "search": "search", "e": "end", "end": "end"}
+#improve search syntax
 #eventually add the above line to program
+#rework path handling
 
 import os
 from funcs import *
@@ -23,8 +21,7 @@ helptext = "Current options include:\n\
         |    cf|change feed|change to another feed                               |\n\
         |     e|end        |end program                                          |\n\
         |     s|search     |search for a string in an episode title              |"
-
-print('Welcome to Podcast Downloader by R. Adler\n')
+options = ["o", "m", "sa", "cf", "e", "s", "options", "more", "show all", "change feed", "end", "search"]
 
 
 #Set download path
@@ -43,7 +40,7 @@ pth = config['dir']
 dpath = r'{}'.format(pth)
 if not dpath:
     while not dpath:
-        newpth = input('Where would you like to save your files?: ')
+        newpth = input('Where would you like to save your files?: ').strip()
         if os.path.exists(newpth) == False: #valid path?
             dpath = None
             continue
@@ -81,7 +78,7 @@ while feed:
     c = 0
     DisplayMore = True
     while True:
-        if OutOfRange == False and DisplayMore == True: #doesn't work as expected
+        if OutOfRange == False and DisplayMore == True:
             DisplayMore = False
             print('\nHere are five more entries:\n')
             if c != 0:
@@ -98,62 +95,64 @@ while feed:
                     OutOfRange = True
                     print('Out of entries.')
                     break
-        entnum = None
-        entnum = input('Which would you like view? (Type line number or for more options type "o" or "options"):\n')
-        if entnum[0].lower() == 'e':
-            print('Ok, Goodbye.')
-            feed = False
-            break
-        elif entnum[0].lower() == 'o':
-            print(helptext)
-        elif entnum[0].lower() == 'm':
-            if OutOfRange == True:
-                print('There are no more entries.\n')
+        entstr = None
+        entstr = input('Which would you like view? (Type line number or for more options type "o" or "options"):\n').strip().lower()
+        try:
+            optnum = options.index(entstr) % len(options)
+            match(optnum):
+                case 0: #options
+                    print(helptext)
+                case 1: #more
+                    if OutOfRange == True:
+                        print("There are no more entries.\n")
+                    else:
+                        DisplayMore = True
+                        if c == 0: c = 1
+                    continue
+                case 2: #show all
+                    for i in range(0, feed_length):
+                        entry = pfeed.entries[i]
+                        entrytitle = entry.title
+                        print(str(i+1) + '. ' + entrytitle + '\n')
+                        OutOfRange = True
+                case 3: #change feed
+                    OutOfRange = False
+                    DisplayMore = True
+                    break
+                case 4: #end
+                    print("Goodbye.")
+                    feed = False
+                    break
+                case 5: #search
+                    searchstr = input('Search for: ').lower()
+                    ineps = []
+                    for ind, fd in enumerate(pfeed.entries):
+                        if searchstr in fd['title'].lower():
+                            ineps.append(ind)
+                    if len(ineps) == 0:
+                        print('No Episodes Found')
+                    else:
+                        print('String found in:\n')
+                        for x in ineps:
+                            print(f'{str(x+1)}. {pfeed.entries[x]["title"]}')
+        except ValueError:
+            if entstr.isnumeric():
+                entnum = int(entstr)
+                if entnum > feed_length:
+                    print('Invalid Entry.\n')
+                    entstr = None
+                    continue
+                entry = parsefeed(pfeed, entnum - 1)
+                pinfo(entry)
+                downloadq = None
+                downloadq = input('Would you like to download this episode? (Y/N): ').strip().lower()
+                if downloadq == 'y':
+                    downloadpath = dpath + entry['title'].replace('/', u'\u2044') + '.mp3'
+                    downloadcast(entry['url'], downloadpath)
+                elif downloadq != 'n':
+                    print('Invalid Input.\n')
             else:
-                DisplayMore = True
-                if c == 0:
-                    c += 1
-            continue
-        elif entnum.lower() == 'show all' or entnum.lower() == 'sa':
-            for i in range(0, feed_length):
-                entry = pfeed.entries[i]
-                entrytitle = entry.title
-                print(str(i+1) + '. ' + entrytitle + '\n')
-                OutOfRange = True
-                continue
-        elif entnum.lower() == 'change feed' or entnum.lower() == 'cf':
-            OutOfRange = False
-            DisplayMore = True
-            break
-        elif entnum.lower() == 'search' or entnum.lower() == 's':
-            searchstr = input('Search for: ').lower()
-            ineps = []
-            for ind, fd in enumerate(pfeed.entries):
-                if searchstr in fd['title'].lower():
-                    ineps.append(ind)
-            if len(ineps) == 0:
-                print('No Episodes Found')
-            else:
-                print('String found in:\n')
-                for x in ineps:
-                    print(f'{str(x+1)}. {pfeed.entries[x]["title"]}')
-        elif entnum.isnumeric():
-            entnum = int(entnum)
-            if entnum > feed_length:
-                print('Invalid Entry.\n')
-                entnum = None
-                continue
-            entry = parsefeed(pfeed, entnum - 1)
-            pinfo(entry)
-            entnum_dl_txt = None
-            entnum_dl_txt = input('Would you like to download this episode? (Y/N): ')
-            if entnum_dl_txt.lower() == 'y':
-                downloadpath = dpath + entry['title'].replace('/', u'\u2044') + '.mp3'
-                downloadcast(entry['url'], downloadpath)
-            elif entnum_dl_txt.lower() != 'n':
                 print('Invalid Input.\n')
-        else:
-            print('Invalid Input.\n')
-            continue
+                continue
 os._exit(0)
 #Stuff seems fine now, hopefully.
